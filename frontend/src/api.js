@@ -2,6 +2,7 @@ import axios from "axios";
 
 const API = axios.create({
   baseURL: "http://localhost:5003/api",
+  baseURL: "https://mern-hvyr.onrender.com/api",
 });
 
 API.interceptors.request.use((config) => {
