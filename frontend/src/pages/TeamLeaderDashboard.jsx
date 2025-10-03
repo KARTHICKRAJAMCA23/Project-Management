@@ -20,7 +20,7 @@ export default function TeamLeaderDashboard() {
     status: "Pending",
   });
 
-  const getFileUrl = (filename) => `http://localhost:5003/uploads/${filename}`;
+  const getFileUrl = (filename) => `https://project-management-1-2rgk.onrender.com/uploads/${filename}`;
 
   useEffect(() => {
     const init = async () => {
