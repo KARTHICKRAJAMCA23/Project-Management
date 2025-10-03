@@ -34,8 +34,8 @@ A full-stack project management application built with **MERN (MongoDB, Express,
 
 ## 🚀 Live Demo
 
-- Frontend: [Your Vercel URL here]  
-- Backend API: [Your Render URL here]
+- Frontend: [https://project-management-2-n0gw.onrender.com](https://project-management-2-n0gw.onrender.com)  
+- Backend API: [https://project-management-1-2rgk.onrender.com](https://project-management-1-2rgk.onrender.com)  
 
 ---
 
