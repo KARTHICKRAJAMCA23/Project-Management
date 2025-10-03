@@ -45,3 +45,10 @@ A full-stack project management application built with **MERN (MongoDB, Express,
 ```bash
 git clone https://github.com/KARTHICKRAJAMCA23/Project-Management.git
 cd Project-Management
+
+
+## Author
+
+**Karthick Raja**  
+Email: karthi@gmail.com  
+GitHub: [KARTHICKRAJAMCA23](https://github.com/KARTHICKRAJAMCA23)

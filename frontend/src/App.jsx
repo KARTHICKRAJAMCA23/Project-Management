@@ -8,7 +8,7 @@ import EmployeeDashboard from "./pages/EmployeeDashboard";
 import Employees from "./pages/Employees";
 import Projects from "./pages/Projects";
 import Home from "./pages/Home";
-import Profile from "./pages/Projects"; // 👈 Profile page for employees
+import Profile from "./pages/Profile"; // 👈 Profile page for employees
 import MyTasks from "./pages/MyTasks";
 import Sidebar from "./components/Sidebar";
 
