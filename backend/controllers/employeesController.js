@@ -2,7 +2,23 @@
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
 
-// Get all employees
+// =======================
+// Get currently logged-in employee profile
+// =======================
+export const getMyProfile = async (req, res) => {
+  try {
+    const employee = await User.findById(req.user.userId).select("-password");
+    if (!employee) return res.status(404).json({ message: "Employee not found" });
+    res.status(200).json(employee);
+  } catch (err) {
+    console.error("Error fetching profile:", err);
+    res.status(500).json({ message: "Server error while fetching profile" });
+  }
+};
+
+// =======================
+// Get all employees (Team Leader only)
+// =======================
 export const getEmployees = async (req, res) => {
   try {
     const employees = await User.find({ role: "employee" })
@@ -15,7 +31,9 @@ export const getEmployees = async (req, res) => {
   }
 };
 
-// Get employee by ID
+// =======================
+// Get employee by ID (Team Leader only)
+// =======================
 export const getEmployeeById = async (req, res) => {
   try {
     const employee = await User.findById(req.params.id).select("-password");
@@ -27,10 +45,11 @@ export const getEmployeeById = async (req, res) => {
   }
 };
 
-// Create employee (teamleader only)
+// =======================
+// Create employee (Team Leader only)
+// =======================
 export const createEmployee = async (req, res) => {
   try {
-    console.log("Received body:", req.body);
     const { fullname, username, email, password, role, status } = req.body;
 
     if (!fullname || !username || !email || !password)
@@ -51,25 +70,26 @@ export const createEmployee = async (req, res) => {
     });
 
     await user.save();
-    res.status(201).json({ message: "Employee created successfully", user });
+    res.status(201).json({ message: "Employee created successfully", user: { ...user.toObject(), password: undefined } });
   } catch (err) {
     console.error("Error creating employee:", err);
     res.status(500).json({ message: "Server error while creating employee" });
   }
 };
 
-// Update employee (teamleader only)
+// =======================
+// Update employee (Team Leader only)
+// =======================
 export const updateEmployee = async (req, res) => {
   try {
     const { password, ...updateData } = req.body;
 
-    // If password is being updated, hash it
+    // Prevent password changes from this route
     if (password) {
-      updateData.password = await bcrypt.hash(password, 10);
+      return res.status(403).json({ message: "Password cannot be changed here" });
     }
 
     const updated = await User.findByIdAndUpdate(req.params.id, updateData, { new: true }).select("-password");
-
     if (!updated) return res.status(404).json({ message: "Employee not found" });
 
     res.status(200).json({ message: "Employee updated successfully", updated });
@@ -79,11 +99,14 @@ export const updateEmployee = async (req, res) => {
   }
 };
 
-// Delete employee (teamleader only)
+// =======================
+// Delete employee (Team Leader only)
+// =======================
 export const deleteEmployee = async (req, res) => {
   try {
     const deleted = await User.findByIdAndDelete(req.params.id);
     if (!deleted) return res.status(404).json({ message: "Employee not found" });
+
     res.status(200).json({ message: "Employee deleted successfully" });
   } catch (err) {
     console.error("Error deleting employee:", err);

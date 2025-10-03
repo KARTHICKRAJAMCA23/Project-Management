@@ -7,7 +7,12 @@ export default function Projects() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editProject, setEditProject] = useState(null);
-  const [formData, setFormData] = useState({ title: "", description: "", status: "Pending" });
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    status: "Pending",
+    deadline: "",
+  });
   const role = localStorage.getItem("role");
 
   // Fetch projects
@@ -28,7 +33,8 @@ export default function Projects() {
   };
 
   // Handle form changes
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
   // Create / Update project
   const handleSubmit = async (e) => {
@@ -40,7 +46,7 @@ export default function Projects() {
       } else {
         await API.post("/projects", formData);
       }
-      setFormData({ title: "", description: "", status: "Pending" });
+      setFormData({ title: "", description: "", status: "Pending", deadline: "" });
       fetchProjects();
     } catch (err) {
       alert(err.response?.data?.message || "Error saving project");
@@ -54,6 +60,7 @@ export default function Projects() {
       title: project.title,
       description: project.description,
       status: project.status,
+      deadline: project.deadline ? project.deadline.split("T")[0] : "",
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -78,6 +85,15 @@ export default function Projects() {
     } catch (err) {
       alert(err.response?.data?.message || "Error updating status");
     }
+  };
+
+  // Calculate remaining days
+  const getDaysLeft = (deadline) => {
+    const today = new Date();
+    const end = new Date(deadline);
+    const diffTime = end - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays >= 0 ? diffDays : 0;
   };
 
   if (loading)
@@ -111,7 +127,7 @@ export default function Projects() {
               type="button"
               onClick={() => {
                 setEditProject(null);
-                setFormData({ title: "", description: "", status: "Pending" });
+                setFormData({ title: "", description: "", status: "Pending", deadline: "" });
               }}
               className="absolute top-4 right-4 text-red-400 hover:text-red-500"
             >
@@ -146,6 +162,14 @@ export default function Projects() {
             <option value="In Progress">In Progress</option>
             <option value="Completed">Completed</option>
           </select>
+
+          <input
+            type="date"
+            name="deadline"
+            value={formData.deadline}
+            onChange={handleChange}
+            className="p-3 sm:p-4 rounded-xl bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 transition-all"
+          />
 
           <button
             type="submit"
@@ -191,6 +215,14 @@ export default function Projects() {
                   {project.status}
                 </span>
               </p>
+
+              {project.deadline && (
+                <p className="mt-1 text-sm text-gray-300">
+                  Deadline: {new Date(project.deadline).toLocaleDateString()} (
+                  {getDaysLeft(project.deadline)}{" "}
+                  {getDaysLeft(project.deadline) === 1 ? "day" : "days"} left)
+                </p>
+              )}
 
               {/* Actions */}
               {role === "teamleader" && (

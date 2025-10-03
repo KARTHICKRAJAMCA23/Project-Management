@@ -27,19 +27,20 @@ export default function Sidebar() {
   const menuItems = {
     teamleader: [
       { name: "Home", path: "/", icon: <Home size={20} /> },
-      { name: "Add Projects", path: "/teamleader-dashboard", icon: <LayoutDashboard size={20} /> },
-      { name: "View Projects", path: "/projects", icon: <FolderKanban size={20} /> },
+      { name: "View Projects", path: "/teamleader-dashboard", icon: <LayoutDashboard size={20} /> },
+      { name: "Add Projects", path: "/projects", icon: <FolderKanban size={20} /> },
       { name: "Employees List", path: "/employees", icon: <Users size={20} /> },
     ],
     employee: [
       { name: "Home", path: "/", icon: <Home size={20} /> },
-      { name: "Dashboard", path: "/employee-dashboard", icon: <LayoutDashboard size={20} /> },
+      { name: "Projects", path: "/employee-dashboard", icon: <LayoutDashboard size={20} /> },
       { name: "My Tasks", path: "/my-tasks", icon: <ClipboardList size={20} /> },
       { name: "Profile", path: "/profile", icon: <User size={20} /> },
     ],
   };
 
   useEffect(() => {
+    // Close mobile menu on route change
     setMobileOpen(false);
   }, [location.pathname]);
 
@@ -47,7 +48,10 @@ export default function Sidebar() {
     <>
       {/* Mobile overlay */}
       {mobileOpen && (
-        <div className="fixed inset-0 bg-black/40 z-40 md:hidden" onClick={() => setMobileOpen(false)} />
+        <div
+          className="fixed inset-0 bg-black/40 z-40 md:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
       )}
 
       <aside
@@ -61,7 +65,7 @@ export default function Sidebar() {
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-700/30">
-          {!collapsed && !mobileOpen && (
+          {!collapsed && (
             <h1 className="text-lg font-semibold text-emerald-400 truncate">
               {role === "teamleader" ? "Team Leader" : "Employee"}
             </h1>
@@ -83,13 +87,12 @@ export default function Sidebar() {
                 key={item.name}
                 to={item.path}
                 className={`
-                  group relative flex items-center gap-4 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
+                  flex items-center gap-4 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
                   ${isActive ? "bg-emerald-600/30 text-emerald-300 border-l-4 border-emerald-500 animate-pulse" : "text-gray-300 hover:bg-emerald-600/10 hover:text-emerald-300"}
                 `}
               >
-                <span className="transition-transform duration-200 group-hover:scale-110">{item.icon}</span>
-                {!collapsed && <span className="truncate hidden md:inline">{item.name}</span>}
-                {mobileOpen && <span className="truncate md:hidden">{item.name}</span>}
+                <span className="transition-transform duration-200">{item.icon}</span>
+                {!collapsed && <span className="truncate">{item.name}</span>}
               </Link>
             );
           })}
@@ -99,11 +102,10 @@ export default function Sidebar() {
         <div className="p-3 border-t border-gray-700/30">
           <button
             onClick={handleLogout}
-            className="group w-full flex items-center gap-3 px-4 py-2 rounded-lg text-sm text-red-400 hover:text-red-500 hover:bg-red-500/10 transition-all"
+            className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-sm text-red-400 hover:text-red-500 hover:bg-red-500/10 transition-all"
           >
-            <LogOut size={20} className="transition-transform duration-200 group-hover:scale-110" />
-            {!collapsed && !mobileOpen && <span>Logout</span>}
-            {mobileOpen && <span className="md:hidden">Logout</span>}
+            <LogOut size={20} />
+            {!collapsed && <span>Logout</span>}
           </button>
         </div>
 

@@ -1,3 +1,4 @@
+// src/pages/EmployeeDashboard.jsx
 import React, { useEffect, useState } from "react";
 import API from "../api";
 
@@ -10,11 +11,9 @@ export default function EmployeeDashboard() {
     const fetchProjects = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await API.get("/projects", {
+        const res = await API.get("/projects/my-projects", {
           headers: { Authorization: `Bearer ${token}` },
         });
-
-        // ✅ fallback if backend doesn't send properly
         setProjects(res.data?.projects || []);
       } catch (err) {
         console.error("❌ Error fetching projects:", err);
@@ -29,41 +28,48 @@ export default function EmployeeDashboard() {
 
   if (loading) {
     return (
-      <div className="dashboard-container">
-        <p className="text-emerald-400">Loading your projects...</p>
+      <div className="flex justify-center items-center min-h-screen text-emerald-400 text-lg font-semibold">
+        Loading your projects...
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="dashboard-container">
-        <p className="text-red-400">{error}</p>
+      <div className="flex justify-center items-center min-h-screen text-red-400 text-lg font-semibold">
+        {error}
       </div>
     );
   }
 
   return (
-    <div className="dashboard-container">
-      <h1 className="text-3xl font-bold text-emerald-400 mb-6">
+    <div className="flex flex-col items-center p-4 sm:p-6 md:p-8 bg-gradient-to-br from-[#0f172a] to-[#1e293b] min-h-screen text-gray-200">
+      <h1 className="text-3xl sm:text-4xl font-bold text-emerald-400 mb-8 text-center">
         Your Projects
       </h1>
 
       {projects.length === 0 ? (
-        <p className="text-gray-400">No projects assigned yet.</p>
+        <p className="text-gray-400 text-center">No projects assigned yet.</p>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((p) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
+          {projects.map((project) => (
             <div
-              key={p._id}
-              className="glass card p-5 rounded-2xl shadow-lg backdrop-blur-md bg-white/10 border border-white/20"
+              key={project._id}
+              className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 sm:p-8 shadow-lg hover:scale-105 transition-transform"
             >
-              <h3 className="text-xl font-semibold text-white">{p.title}</h3>
-              <p className="text-gray-300 mt-2">{p.description}</p>
-              <p className="mt-3 text-sm text-emerald-400">
+              <h3 className="text-xl sm:text-2xl font-semibold text-white truncate">{project.title}</h3>
+              <p className="text-gray-300 mt-2 line-clamp-3">{project.description}</p>
+              <p className="mt-4 text-sm text-emerald-400">
                 Status:{" "}
-                <span className="font-medium text-white">{p.status}</span>
+                <span className="font-medium text-white">
+                  {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
+                </span>
               </p>
+              {project.deadline && (
+                <p className="mt-1 text-sm text-gray-400">
+                  Deadline: {new Date(project.deadline).toLocaleDateString()}
+                </p>
+              )}
             </div>
           ))}
         </div>
