@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import API from "../api";
 
-const API_URL = "https://project-management-1-2rgk.onrender.com/5003";
+const API_URL = "https://project-management-1-2rgk.onrender.com";
 
 export default function MyTasks() {
   const [projects, setProjects] = useState([]);
